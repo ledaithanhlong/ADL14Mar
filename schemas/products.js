@@ -35,4 +35,17 @@ let productSchema = mongoose.Schema({
         default: false
     }
 })
-module.exports = new mongoose.model('product', productSchema)
+// Auto-create Inventory when a new Product is saved
+productSchema.post('save', async function (doc) {
+    try {
+        let inventoryModel = require('./inventories');
+        let existing = await inventoryModel.findOne({ product: doc._id });
+        if (!existing) {
+            await inventoryModel.create({ product: doc._id });
+        }
+    } catch (err) {
+        console.error('Error auto-creating inventory:', err.message);
+    }
+});
+
+module.exports = mongoose.model('product', productSchema);
