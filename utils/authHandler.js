@@ -8,7 +8,7 @@ module.exports = {
         try {
             let token = req.headers.authorization;
             if (!token || !token.startsWith('Bearer')) {
-                res.status(404).send("ban chua dang nhap")
+                return res.status(401).send("ban chua dang nhap")
             }
             token = token.split(" ")[1];
             let result = jwt.verify(token, publicKey, { algorithms: ['RS256'] });
@@ -18,13 +18,13 @@ module.exports = {
                     req.user = user
                     next()
                 } else {
-                    res.status(404).send("ban chua dang nhap")
+                    return res.status(401).send("ban chua dang nhap")
                 }
             } else {
-                res.status(404).send("ban chua dang nhap")
+                return res.status(401).send("ban chua dang nhap")
             }
         } catch (error) {
-            res.status(404).send("ban chua dang nhap")
+            return res.status(401).send("ban chua dang nhap")
         }
     }
 }
